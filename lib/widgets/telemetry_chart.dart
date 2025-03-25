@@ -52,7 +52,7 @@ class TelemetryChart extends StatelessWidget {
         gridData: FlGridData(show: true),
         borderData: FlBorderData(show: true),
         minY: 0,
-        maxY: 100,
+        maxY: 40,
       ),
     );
   }
