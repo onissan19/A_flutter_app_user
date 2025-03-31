@@ -4,8 +4,9 @@ import '../models/telemetry_point.dart';
 
 class TelemetryChart extends StatelessWidget {
   final List<TelemetryPoint> points;
+  final String unit;
 
-  const TelemetryChart({required this.points, super.key});
+  const TelemetryChart({required this.points, this.unit = "°C", super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -39,20 +40,36 @@ class TelemetryChart extends StatelessWidget {
             isCurved: true,
             color: Colors.red,
             barWidth: 2,
-            dotData: FlDotData(show: false),
+            dotData: FlDotData(show: true),
+            belowBarData: BarAreaData(show: false),
           ),
           LineChartBarData(
             spots: humiditySpots,
             isCurved: true,
             color: Colors.blue,
             barWidth: 2,
-            dotData: FlDotData(show: false),
+            dotData: FlDotData(show: true),
+            belowBarData: BarAreaData(show: false),
           ),
         ],
         gridData: FlGridData(show: true),
         borderData: FlBorderData(show: true),
         minY: 0,
         maxY: 40,
+        lineTouchData: LineTouchData(
+          touchTooltipData: LineTouchTooltipData(
+            tooltipBgColor: Colors.grey.shade700,
+            getTooltipItems: (touchedSpots) {
+              return touchedSpots.map((spot) {
+                final isTemp = spot.bar.color == Colors.red;
+                final label = isTemp
+                    ? "Temp: ${spot.y.toStringAsFixed(1)} $unit"
+                    : "Hum: ${spot.y.toStringAsFixed(1)} %";
+                return LineTooltipItem(label, const TextStyle(color: Colors.white));
+              }).toList();
+            },
+          ),
+        ),
       ),
     );
   }

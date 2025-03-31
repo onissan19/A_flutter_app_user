@@ -3,20 +3,33 @@ import 'dart:math';
 
 class TelemetrySimulator {
   final Function(double, double) onNewData;
-  late Timer _timer;
+  final Duration tempInterval;
+  final Duration humInterval;
+
+  Timer? _tempTimer;
+  Timer? _humTimer;
   final Random _random = Random();
 
-  TelemetrySimulator({required this.onNewData});
+  TelemetrySimulator({
+    required this.onNewData,
+    required this.tempInterval,
+    required this.humInterval,
+  });
 
   void start() {
-    _timer = Timer.periodic(Duration(seconds: 10), (_) {
+    _tempTimer = Timer.periodic(tempInterval, (_) {
       double temp = double.parse((10 + _random.nextDouble() * 20).toStringAsFixed(1));
+      onNewData(temp, -1); // -1 = pas de nouvelle humidité
+    });
+
+    _humTimer = Timer.periodic(humInterval, (_) {
       double hum = double.parse((10 + _random.nextDouble() * 20).toStringAsFixed(1));
-      onNewData(temp, hum);
+      onNewData(-1, hum); // -1 = pas de nouvelle température
     });
   }
 
   void stop() {
-    _timer.cancel();
+    _tempTimer?.cancel();
+    _humTimer?.cancel();
   }
 }
