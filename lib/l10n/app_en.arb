@@ -1,0 +1,15 @@
+{
+"@@locale": "en",
+"title": "My Objects",
+"settings": "Settings",
+"language": "Language",
+"darkMode": "Dark Mode",
+"temperatureUnit": "Temperature Unit",
+"logout": "Logout",
+"login": "Login",
+"email": "Email",
+"password": "Password",
+"forgotPassword": "Forgot password?",
+"noAccount": "No account?",
+"createAccount": "Create account"
+}
