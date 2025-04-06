@@ -3,20 +3,20 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:projey/generated/l10n.dart';
 
-// Widget affichant un graphique des données de température et d’humidité
+/// Widget that displays a line chart for temperature and humidity data
 class TelemetryChart extends StatelessWidget {
   final List<TelemetryPoint> points;
   final String unit;
 
-  // Le graphique prend une liste de points de télémétrie et une unité de température à afficher
+  /// Accepts a list of telemetry points and the temperature unit label to display (°C or °F)
   const TelemetryChart({required this.points, this.unit = "°C", super.key});
 
   @override
   Widget build(BuildContext context) {
-    final tempSpots = <FlSpot>[];      // Points pour la courbe de température
-    final humiditySpots = <FlSpot>[];  // Points pour la courbe d’humidité
+    final tempSpots = <FlSpot>[];      // Data points for the temperature curve
+    final humiditySpots = <FlSpot>[];  // Data points for the humidity curve
 
-    // On transforme chaque point de données en un FlSpot pour fl_chart
+    // Convert telemetry points into FlSpot for the chart
     for (var i = 0; i < points.length; i++) {
       tempSpots.add(FlSpot(i.toDouble(), points[i].temperature));
       humiditySpots.add(FlSpot(i.toDouble(), points[i].humidity));
@@ -25,8 +25,7 @@ class TelemetryChart extends StatelessWidget {
     return LineChart(
       LineChartData(
         titlesData: const FlTitlesData(
-          // On laisse les axes top, bottom et right vides ici
-          bottomTitles: AxisTitles(),
+          bottomTitles: AxisTitles(), // No labels on X-axis for now
           leftTitles: AxisTitles(
             sideTitles: SideTitles(showTitles: true, reservedSize: 40),
           ),
@@ -34,14 +33,14 @@ class TelemetryChart extends StatelessWidget {
           topTitles: AxisTitles(),
         ),
         lineBarsData: [
-          // Courbe rouge pour la température
+          // Red line for temperature
           LineChartBarData(
             spots: tempSpots,
             isCurved: true,
             color: Colors.red,
-            belowBarData: BarAreaData(), // zone sous la courbe (invisible ici)
+            belowBarData: BarAreaData(), // No filled area under the curve
           ),
-          // Courbe bleue pour l’humidité
+          // Blue line for humidity
           LineChartBarData(
             spots: humiditySpots,
             isCurved: true,
@@ -49,11 +48,11 @@ class TelemetryChart extends StatelessWidget {
             belowBarData: BarAreaData(),
           ),
         ],
-        borderData: FlBorderData(show: true), // Affiche les bords du graphe
-        minY: 0,  // Valeur minimale de l’axe Y
-        maxY: 40, // Valeur maximale de l’axe Y
+        borderData: FlBorderData(show: true), // Show graph borders
+        minY: 0,  // Minimum Y-axis value
+        maxY: 40, // Max Y value fixed here — should adapt to °F if needed
 
-        // Interaction avec le graphique (tooltip)
+        // Tooltip config when touching a graph point
         lineTouchData: LineTouchData(
           touchTooltipData: LineTouchTooltipData(
             tooltipBgColor: Colors.grey.shade700,
