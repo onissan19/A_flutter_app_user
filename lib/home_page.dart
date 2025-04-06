@@ -11,7 +11,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  // Stocker les objets avec des IDs fixes
+  // Store objects with fixed IDs
   final List<Map<String, String>> allThings = [
     {'id': 'temperature', 'labelKey': 'sensorTemperature'},
     {'id': 'humidity', 'labelKey': 'sensorHumidity'},
@@ -25,7 +25,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    filteredThings = List.from(allThings); // Tout afficher par défaut
+    filteredThings = List.from(allThings); // Show everything by default
   }
 
   void _filterThings(String type) {
@@ -44,7 +44,7 @@ class _HomePageState extends State<HomePage> {
     final t = S.of(context);
     final colorScheme = Theme.of(context).colorScheme;
 
-    // Map ID => traduction
+    // ID => translated label
     final labelTranslations = {
       'all': t.filterOptionAll,
       'temperature': t.filterOptionTemperature,
@@ -123,6 +123,7 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
 
+          // List of sensors based on selected filter
           Expanded(
             child: ListView.builder(
               itemCount: filteredThings.length,
