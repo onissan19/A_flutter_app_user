@@ -8,14 +8,17 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final t = S.of(context);
+    final t = S.of(context); // Localization object
 
     return Scaffold(
-      appBar: AppBar(title: Text(t.homeTitle)),
+      appBar: AppBar(
+        title: Text(t.homeTitle), // Dynamic title from translations
+      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            // Button to navigate to Manual Mode
             ElevatedButton.icon(
               icon: const Icon(Icons.edit),
               label: Text(t.homeManualMode),
@@ -27,6 +30,8 @@ class HomeScreen extends StatelessWidget {
               },
             ),
             const SizedBox(height: 20),
+
+            // Button to navigate to Auto Mode
             ElevatedButton.icon(
               icon: const Icon(Icons.auto_mode),
               label: Text(t.homeAutoMode),
