@@ -1,15 +1,15 @@
 import 'dart:async';
 import 'dart:math';
 
-// Cette classe simule un capteur qui génère périodiquement des données de température et d'humidité
+/// This class simulates a sensor that periodically generates temperature and humidity data
 class TelemetrySimulator {
-  // Fonction de rappel appelée à chaque nouvelle donnée générée
+  // Callback function triggered on each new data generation
   final Function(double, double) onNewData;
 
-  // Fréquence d'envoi des données de température
+  // Frequency for temperature data
   final Duration tempInterval;
 
-  // Fréquence d'envoi des données d'humidité
+  // Frequency for humidity data
   final Duration humInterval;
 
   Timer? _tempTimer;
@@ -22,24 +22,24 @@ class TelemetrySimulator {
     required this.humInterval,
   });
 
-  // Démarre les deux timers : un pour la température, un pour l’humidité
+  /// Starts two timers: one for temperature, one for humidity
   void start() {
     _tempTimer = Timer.periodic(tempInterval, (_) {
-      // Génère une température aléatoire entre 10.0 et 30.0 (précision 0.1)
+      // Generates a random temperature between 10.0 and 30.0 (precision 0.1)
       final temp = double.parse((10 + _random.nextDouble() * 20).toStringAsFixed(1));
-      // Appelle la fonction de rappel avec -1 pour l’humidité (non mise à jour ici)
+      // Calls the callback with -1 for humidity (not updated here)
       onNewData(temp, -1);
     });
 
     _humTimer = Timer.periodic(humInterval, (_) {
-      // Génère une humidité aléatoire entre 10% et 30% (précision 0.1)
+      // Generates a random humidity between 10% and 30% (precision 0.1)
       final hum = double.parse((10 + _random.nextDouble() * 20).toStringAsFixed(1));
-      // Appelle la fonction de rappel avec -1 pour la température (non mise à jour ici)
+      // Calls the callback with -1 for temperature (not updated here)
       onNewData(-1, hum);
     });
   }
 
-  // Arrête les deux timers
+  /// Stops both timers
   void stop() {
     _tempTimer?.cancel();
     _humTimer?.cancel();
