@@ -7,7 +7,7 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final t = S.of(context); // récupère les textes traduits
+    final t = S.of(context); // gets translated strings
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -18,28 +18,31 @@ class LoginPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              t.login, // "Connexion"
+              t.login, // "Login" title
               style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
 
+            // Email input field
             const TextField(
               decoration: InputDecoration(
-                labelText: "Email", // <- à traduire aussi si besoin
+                labelText: "Email", // <-- can also be localized
                 border: OutlineInputBorder(),
               ),
             ),
             const SizedBox(height: 12),
 
+            // Password input field
             const TextField(
               obscureText: true,
               decoration: InputDecoration(
-                labelText: "Mot de passe", // <- à traduire aussi si besoin
+                labelText: "Mot de passe", // <-- can also be localized
                 border: OutlineInputBorder(),
               ),
             ),
             const SizedBox(height: 12),
 
+            // Forgot password link
             Align(
               alignment: Alignment.centerRight,
               child: TextButton(
@@ -49,6 +52,7 @@ class LoginPage extends StatelessWidget {
             ),
             const SizedBox(height: 20),
 
+            // Login button
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
@@ -63,6 +67,7 @@ class LoginPage extends StatelessWidget {
             ),
             const SizedBox(height: 12),
 
+            // Create account link
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
