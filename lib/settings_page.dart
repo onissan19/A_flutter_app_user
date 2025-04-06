@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'generated/l10n.dart'; // flutter_intl
-import 'main.dart'; // pour appeler MyApp.setLocale
+import 'generated/l10n.dart'; // For localization using flutter_intl
+import 'main.dart'; // To call MyApp.setLocale and MyApp.setThemeMode
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -10,22 +10,22 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  String _language = 'fr';
-  bool _isDarkMode = false;
-  String _temperatureUnit = 'Celsius';
+  String _language = 'fr'; // Default language
+  bool _isDarkMode = false; // Default theme mode (light)
+  String _temperatureUnit = 'Celsius'; // Default temperature unit
 
   @override
   Widget build(BuildContext context) {
-    final t = S.of(context); // raccourci pour les traductions
+    final t = S.of(context); // Shortcut to access localized strings
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(t.settings),
+        title: Text(t.settings), // Page title
         centerTitle: true,
       ),
       body: ListView(
         children: [
-          // Langue
+          // Language selector
           ListTile(
             leading: const Icon(Icons.language),
             title: Text(t.language),
@@ -39,6 +39,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 if (value != null) {
                   setState(() {
                     _language = value;
+                    // Change app locale dynamically
                     MyApp.setLocale(context, Locale(_language));
                   });
                 }
@@ -46,7 +47,7 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
           ),
 
-          // Mode sombre
+          // Dark mode switch
           SwitchListTile(
             secondary: const Icon(Icons.brightness_6),
             title: Text(t.darkMode),
@@ -54,12 +55,13 @@ class _SettingsPageState extends State<SettingsPage> {
             onChanged: (value) {
               setState(() {
                 _isDarkMode = value;
+                // Dynamically change theme between light and dark
                 MyApp.setThemeMode(context, value ? ThemeMode.dark : ThemeMode.light);
               });
             },
           ),
 
-          // Unité de température
+          // Temperature unit selector (Celsius or Fahrenheit)
           ListTile(
             leading: const Icon(Icons.thermostat),
             title: Text(t.temperatureUnit),
@@ -72,7 +74,7 @@ class _SettingsPageState extends State<SettingsPage> {
               onChanged: (value) {
                 setState(() {
                   _temperatureUnit = value!;
-                  // TODO: Envoyer la valeur au serveur plus tard
+                  // TODO: Send value to backend or update global state
                 });
               },
             ),
@@ -80,11 +82,12 @@ class _SettingsPageState extends State<SettingsPage> {
 
           const Divider(),
 
-          // Déconnexion
+          // Logout action
           ListTile(
             leading: const Icon(Icons.logout),
             title: Text(t.logout),
             onTap: () {
+              // Return to the first page (login or splash)
               Navigator.popUntil(context, (route) => route.isFirst);
             },
           ),
