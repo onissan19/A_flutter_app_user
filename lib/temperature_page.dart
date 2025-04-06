@@ -6,6 +6,6 @@ class TemperaturePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const HomeScreen(); // <- Utilise directement l'écran du capteur
+    return const HomeScreen(); 
   }
 }
