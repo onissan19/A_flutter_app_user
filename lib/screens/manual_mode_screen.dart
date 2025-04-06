@@ -1,11 +1,11 @@
-// Import du modèle de données, du formulaire de saisie et du graphique
+// Import telemetry model, input form, and chart widget
 import 'package:projey/models/telemetry_point.dart';
 import 'package:projey/widgets/data_input_form.dart';
 import 'package:projey/widgets/telemetry_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:projey/generated/l10n.dart';
 
-// Écran pour le mode manuel (saisie des données par l'utilisateur)
+// Screen for manual mode (user input)
 class ManualModeScreen extends StatefulWidget {
   const ManualModeScreen({super.key});
 
@@ -14,19 +14,19 @@ class ManualModeScreen extends StatefulWidget {
 }
 
 class _ManualModeScreenState extends State<ManualModeScreen> {
-  // Liste des points de télémétrie saisis manuellement
+  // Stores the list of manually entered telemetry points
   final List<TelemetryPoint> _points = [];
 
-  // Fonction appelée lors de la soumission du formulaire
+  // Called when a new point is submitted
   void _addPoint(double temperature, double humidity) {
     setState(() {
       _points.add(TelemetryPoint(
-        timestamp: DateTime.now(), // Date actuelle pour le point
+        timestamp: DateTime.now(), // Timestamp when the data is added
         temperature: temperature,
         humidity: humidity,
       ));
 
-      // On limite à 20 valeurs pour éviter d'alourdir le graphique
+      // Limit to 20 points to keep chart clean
       if (_points.length > 20) {
         _points.removeAt(0);
       }
@@ -40,15 +40,14 @@ class _ManualModeScreenState extends State<ManualModeScreen> {
           padding: const EdgeInsets.all(16),
           child: Column(
             children: [
-              // Formulaire pour saisir température et humidité
+              // Temperature & humidity input form
               DataInputForm(onSubmit: _addPoint),
 
               const SizedBox(height: 20),
 
-              // Graphique affichant les données saisies
+              // Telemetry chart showing submitted data
               Expanded(child: TelemetryChart(points: _points)),
             ],
           ),
         ),
       );
-}
