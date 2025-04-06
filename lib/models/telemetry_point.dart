@@ -1,15 +1,15 @@
-// Représente un point de données mesuré par le capteur à un instant donné
+// Represents a single telemetry data point recorded by the sensor
 class TelemetryPoint {
-  // Moment où la donnée a été capturée
+  // The timestamp when the data was recorded
   final DateTime timestamp;
 
-  // Température relevée (en °C, par défaut)
+  // The measured temperature (in °C by default)
   final double temperature;
 
-  // Humidité relevée (en %)
+  // The measured humidity (in %)
   final double humidity;
 
-  // Constructeur de la classe : on a besoin des 3 infos pour créer un point
+  // Constructor: requires timestamp, temperature, and humidity to create a data point
   TelemetryPoint({
     required this.timestamp,
     required this.temperature,
