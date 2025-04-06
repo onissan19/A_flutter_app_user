@@ -7,8 +7,7 @@ import 'package:projey/services/telemetry_simulator.dart';
 import 'package:projey/widgets/telemetry_chart.dart';
 import 'package:flutter/material.dart';
 
-
-// Écran qui simule le mode automatique d'un capteur (température/humidité)
+// Screen that simulates the automatic mode of a sensor (temperature/humidity)
 class AutoModeScreen extends StatefulWidget {
   const AutoModeScreen({super.key});
 
@@ -17,23 +16,23 @@ class AutoModeScreen extends StatefulWidget {
 }
 
 class _AutoModeScreenState extends State<AutoModeScreen> {
-  final List<TelemetryPoint> _points = []; // Historique des mesures
-  late TelemetrySimulator _simulator;     // Générateur de données simulées
-  final FakeServer _server = FakeServer(); // Faux serveur pour récupérer les attributs
-  bool isActiveMode = true;               // Mode actif ou veille
-  double? _lastTemp;                      // Dernière température connue
-  double? _lastHum;                       // Dernière humidité connue
-  String _unit = "°C";                    // Unité de température actuelle (ex. "°C")
-  Timer? _pollingTimer;                  // Timer pour interroger le serveur périodiquement
+  final List<TelemetryPoint> _points = []; // Stores the telemetry history
+  late TelemetrySimulator _simulator;      // Generates simulated data
+  final FakeServer _server = FakeServer(); // Mock server to get attributes
+  bool isActiveMode = true;                // Determines if the sensor is in active or standby mode
+  double? _lastTemp;                       // Last received temperature
+  double? _lastHum;                        // Last received humidity
+  String _unit = "°C";                     // Current temperature unit
+  Timer? _pollingTimer;                    // Timer to periodically poll the server
 
   @override
   void initState() {
     super.initState();
-    _startSimulator();                   // Lance la génération de données
-    _startPollingServerAttributes();    // Lance l'interrogation périodique du serveur
+    _startSimulator();                    // Starts generating data
+    _startPollingServerAttributes();     // Starts polling for unit updates
   }
 
-  // Configure le simulateur selon le mode actif/veille
+  // Starts the simulator with the appropriate intervals based on mode
   void _startSimulator() {
     _simulator = TelemetrySimulator(
       onNewData: _handleNewData,
@@ -43,7 +42,7 @@ class _AutoModeScreenState extends State<AutoModeScreen> {
     _simulator.start();
   }
 
-  // Interroge le faux serveur à intervalle régulier pour obtenir l'unité de température
+  // Polls the mock server periodically to update the unit
   void _startPollingServerAttributes() {
     _pollingTimer?.cancel();
     final interval = isActiveMode ? const Duration(seconds: 10) : const Duration(seconds: 20);
@@ -55,87 +54,81 @@ class _AutoModeScreenState extends State<AutoModeScreen> {
     });
   }
 
-  // Réception des nouvelles données simulées (température et/ou humidité)
+  // Handles new data received from the simulator
   void _handleNewData(double temp, double hum) {
     setState(() {
-      // On conserve les dernières valeurs valides
-      if (temp != -1) {
-        _lastTemp = temp;
-      }
-      if (hum != -1) {
-        _lastHum = hum;
-      }
+      if (temp != -1) _lastTemp = temp;
+      if (hum != -1) _lastHum = hum;
 
-      // Ajoute un point uniquement si on a les 2 valeurs
       if (_lastTemp != null && _lastHum != null) {
-        _points.add(TelemetryPoint(
-          timestamp: DateTime.now(),
-          temperature: _lastTemp!,
-          humidity: _lastHum!,
-        ));
-        // Garde un historique limité à 20 points pour ne pas surcharger le graphique
+        _points.add(
+          TelemetryPoint(
+            timestamp: DateTime.now(),
+            temperature: _lastTemp!,
+            humidity: _lastHum!,
+          ),
+        );
+
         if (_points.length > 20) {
-          _points.removeAt(0);
+          _points.removeAt(0); // Limit to 20 points
         }
       }
     });
   }
 
-  // Permet de basculer entre mode actif et veille via le switch
+  // Toggles between active and standby mode
   void _toggleMode(bool value) {
     setState(() {
       isActiveMode = value;
       _simulator.stop();
       _pollingTimer?.cancel();
-      _startSimulator();                // Redémarre avec les nouveaux intervalles
+      _startSimulator();
       _startPollingServerAttributes();
     });
   }
 
   @override
   void dispose() {
-    _simulator.stop();                 // Nettoyage des timers à la fermeture
+    _simulator.stop(); // Cleanup timers
     _pollingTimer?.cancel();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: Text(S.of(context).autoModeTitle)),
-    body: Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        children: [
-          // Infos sur la fréquence des envois
-          Text('${S.of(context).autoModeUpdateInfo(isActiveMode ? "10/20" : "20/50")}'),
-          Text('${S.of(context).autoModeTemperatureUnit(_unit)}'),
-
-          const SizedBox(height: 10),
-
-          // Bouton pour activer/désactiver le mode actif/veille
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+        appBar: AppBar(title: Text(S.of(context).autoModeTitle)),
+        body: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
             children: [
-              Text(S.of(context).autoModeActive),
-              Switch(
-                value: isActiveMode,
-                onChanged: _toggleMode,
+              // Display current sending intervals and temperature unit
+              Text('${S.of(context).autoModeUpdateInfo(isActiveMode ? "10/20" : "20/50")}'),
+              Text('${S.of(context).autoModeTemperatureUnit(_unit)}'),
+              const SizedBox(height: 10),
+
+              // Toggle for switching mode
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(S.of(context).autoModeActive),
+                  Switch(
+                    value: isActiveMode,
+                    onChanged: _toggleMode,
+                  ),
+                  Text(S.of(context).autoModeStandby),
+                ],
               ),
-              Text(S.of(context).autoModeStandby),
+              const SizedBox(height: 20),
+
+              // Display telemetry chart
+              Expanded(
+                child: TelemetryChart(
+                  points: _points,
+                  unit: _unit,
+                ),
+              ),
             ],
           ),
-
-          const SizedBox(height: 20),
-
-          // Graphique avec les données télémétriques
-          Expanded(
-            child: TelemetryChart(
-              points: _points,
-              unit: _unit,
-            ),
-          ),
-        ],
-      ),
-    ),
-  );
+        ),
+      );
 }
